@@ -1,7 +1,13 @@
 <?php
-    require_once 'templates/header.php';
+    // On crée un raccourci avec une constante qui représente ma direction racine de mon site
+    define('_ROOTPATH_', __DIR__);
+    
+    //On fait un autoload pour utiliser nos namespace
+    spl_autoload_register();
+    
 
-    require_once 'templates/home.php';
+    use App\Controller\Controller;
 
-    require_once 'templates/footer.php';
+    $controller = new Controller();
+    $controller->route();
 ?>
