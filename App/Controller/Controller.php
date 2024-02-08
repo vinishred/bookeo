@@ -7,30 +7,31 @@ class Controller
 {
     public function route(): void 
     {
-        if (isset($_GET['controller'])) {
-            switch ($_GET['controller']) {
-                case 'book':
-                    //charge le bookcontroller
-                    var_dump('vous etes sur la page book');
-                    $pageController = new PageController();
-                    $pageController->route();
-                    break;
-                case 'page';
-                    // charger le pagecontroller page
-                    var_dump('vous etes sur la page page');
-                    $pageController = new PageController();
-                    $pageController->route();
-                    break;
-                default:
-                    // erreur
-                    var_dump('vous etes sur la page 404');
-                    $pageController = new PageController();
-                    $pageController->route();
-                    break;
+        try {
+            if (isset($_GET['controller'])) {
+                switch ($_GET['controller']) {
+                    case 'book':
+                        //charge le bookcontroller
+                        $bookController = new BookController();
+                        $bookController->route();
+                        break;
+                    case 'page';
+                        // charger le pagecontroller page
+                        $pageController = new PageController();
+                        $pageController->route();
+                        break;
+                    default:
+                        // erreur
+                        throw new \Exception('Le controller ' . $_GET['controller'] . ' n\'existe pas');
+                        break;
+                }
+            }  else {
+                // charger la page d'accueil
+                $pageController = new PageController();
+                $pageController->home();
             }
-        } else {
-            // charger la page d'accueil
-            var_dump('accueil');
+        } catch (\Exception $e) {
+            $this->render('errors/default', ['error' => $e->getMessage()]);
         }
     } 
     // on crée une fonction qui va gérer le rendu de la page d'ou le nom
@@ -47,7 +48,7 @@ class Controller
             }
         } catch (\Exception $e) {
             // Générer une erreur
-            echo $e->getMessage();
+            $this->render('errors/default', ['error' => $e->getMessage()]);
         }
     }
 }
